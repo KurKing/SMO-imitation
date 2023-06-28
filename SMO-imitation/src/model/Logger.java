@@ -3,20 +3,20 @@ package model;
 import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 
-public class ModelLogger implements Runnable {
+public class Logger implements Runnable {
 
     private final int id;
     private final BlockingQueue<Long> queue;
-    private ChannelSimulation[] channels;
+    private Channel[] channels;
     private double droppedRequests;
 
-    public ModelLogger(int id, BlockingQueue<Long> queue,  ChannelSimulation[] channels) {
+    public Logger(int id, BlockingQueue<Long> queue, Channel[] channels) {
         this.id = id;
         this.channels = channels;
         this.queue = queue;
     }
 
-    public ModelLogger(BlockingQueue<Long> queue,  ChannelSimulation[] channels) {
+    public Logger(BlockingQueue<Long> queue, Channel[] channels) {
         this.id = -2;
         this.channels = channels;
         this.queue = queue;
@@ -27,7 +27,7 @@ public class ModelLogger implements Runnable {
     }
 
     private boolean isChannelsActive() {
-        return Arrays.stream(channels).anyMatch(ChannelSimulation::isRunning);
+        return Arrays.stream(channels).anyMatch(Channel::isRunning);
     }
 
     @Override

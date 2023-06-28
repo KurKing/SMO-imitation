@@ -13,7 +13,7 @@ public class SMO implements Runnable {
     private final int id;
 
     BlockingQueue<Long> queue;
-    ChannelSimulation[] channels;
+    Channel[] channels;
     public double avgQueueLength;
     public double rejectionProbability;
 
@@ -29,10 +29,10 @@ public class SMO implements Runnable {
 
         executor = Executors.newFixedThreadPool(numChannels + 1);
         queue = new ArrayBlockingQueue<>(queueCapacity);
-        channels = new ChannelSimulation[numChannels];
+        channels = new Channel[numChannels];
 
         for (int i = 0; i < numChannels; i++) {
-            channels[i] = new ChannelSimulation(queue, serviceTime, simTime);
+            channels[i] = new Channel(queue, serviceTime, simTime);
         }
     }
 
@@ -41,9 +41,9 @@ public class SMO implements Runnable {
 
         int numRequests = (int) (simTime / intervalTime);
 
-        ModelLogger modelLogger = new ModelLogger(id, queue, channels);
+        Logger logger = new Logger(id, queue, channels);
 
-        executor.execute(modelLogger);
+        executor.execute(logger);
 
         for (int i = 0; i < numChannels; i++) {
             executor.execute(channels[i]);
@@ -60,7 +60,7 @@ public class SMO implements Runnable {
                     queue.put(System.currentTimeMillis());
                 }
                 queueLength+= queue.size();
-                modelLogger.setDroppedRequests(rejectCount);
+                logger.setDroppedRequests(rejectCount);
                 Thread.sleep((long) (intervalTime * 100));
             } catch (InterruptedException e) { }
         }

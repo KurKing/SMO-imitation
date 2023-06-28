@@ -3,7 +3,7 @@ package model;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class ChannelSimulation implements Runnable {
+public class Channel implements Runnable {
 
     private final BlockingQueue<Long> queue;
     private final double serviceTime;
@@ -11,7 +11,7 @@ public class ChannelSimulation implements Runnable {
     private boolean isRunning = true;
     private Long lastElement = null;
 
-    public ChannelSimulation(BlockingQueue<Long> queue, double serviceTime, double simTime) {
+    public Channel(BlockingQueue<Long> queue, double serviceTime, double simTime) {
         this.queue = queue;
         this.serviceTime = serviceTime;
         this.simTime = simTime;

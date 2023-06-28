@@ -1,5 +1,5 @@
-import model.ChannelSimulation;
-import model.ModelLogger;
+import model.Channel;
+import model.Logger;
 
 import java.util.concurrent.*;
 
@@ -17,14 +17,14 @@ public class MainTask1 {
         ExecutorService executor = Executors.newFixedThreadPool(channelsNumber+1);
         BlockingQueue<Long> queue = new ArrayBlockingQueue<>(queueCapacity);
 
-        ChannelSimulation[] channels = new ChannelSimulation[channelsNumber];
+        Channel[] channels = new Channel[channelsNumber];
         for (int i = 0; i < channelsNumber; i++) {
-            channels[i] = new ChannelSimulation(queue, serviceTime, simulationTime);
+            channels[i] = new Channel(queue, serviceTime, simulationTime);
         }
 
-        ModelLogger modelLogger = new ModelLogger(queue, channels);
+        Logger logger = new Logger(queue, channels);
 
-        executor.execute(modelLogger);
+        executor.execute(logger);
 
         for (int i = 0; i < channelsNumber; i++) {
             executor.execute(channels[i]);
@@ -41,7 +41,7 @@ public class MainTask1 {
                 queue.put(System.currentTimeMillis());
             }
             queueLength+= queue.size();
-            modelLogger.setDroppedRequests(rejectCount);
+            logger.setDroppedRequests(rejectCount);
 
             Thread.sleep((long) (intervalTime * 100));
         }
